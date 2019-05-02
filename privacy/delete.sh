@@ -1,6 +1,6 @@
-#!/bin/sh -u
+#!/bin/sh -e
 
-# Copyright 2018 ConsenSys AG.
+# Copyright 2019 ConsenSys AG.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
 # the License. You may obtain a copy of the License at
@@ -11,16 +11,9 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
-NO_LOCK_REQUIRED=false
-
 . ./.env
-. ./.common.sh
 
-
-echo "${bold}*************************************"
-echo "Pantheon Quickstart ${version}"
-echo "*************************************${normal}"
-echo "Resume network"
-echo "----------------------------------"
-
-docker-compose ${composeFile} start
+./remove.sh
+docker image rm quickstart/pantheon:$PANTHEON_VERSION-privacy
+docker image rm quickstart/orion:$ORION_VERSION
+docker image rm quickstart/block-explorer-light:$PANTHEON_VERSION

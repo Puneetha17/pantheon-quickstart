@@ -1,4 +1,4 @@
-#!/bin/sh -u
+#!/bin/sh -e
 
 # Copyright 2018 ConsenSys AG.
 #
@@ -11,16 +11,10 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
-NO_LOCK_REQUIRED=false
+PUBLIC_KEYS_DIR=${PANTHEON_PUBLIC_KEY_DIRECTORY:=/opt/pantheon/public-keys/}
 
-. ./.env
-. ./.common.sh
+# write pub key for making other nodes able to connect to bootnode
+/opt/pantheon/bin/pantheon $@ public-key export --to="${PUBLIC_KEYS_DIR}bootnode"
 
-
-echo "${bold}*************************************"
-echo "Pantheon Quickstart ${version}"
-echo "*************************************${normal}"
-echo "Resume network"
-echo "----------------------------------"
-
-docker-compose ${composeFile} start
+# run bootnode with discovery but no bootnodes as it's our bootnode.
+/opt/pantheon/bin/pantheon $@ --bootnodes
