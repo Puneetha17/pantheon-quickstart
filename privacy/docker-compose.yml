@@ -8,19 +8,21 @@ services:
     image: quickstart/pantheon:${PANTHEON_VERSION}-privacy
     environment:
       - PANTHEON_PUBLIC_KEY_DIRECTORY=${PANTHEON_PUBLIC_KEY_DIRECTORY}
-    entrypoint: /opt/pantheon/bootnode_start.sh --network=dev
+    entrypoint: /opt/pantheon/bootnode_start.sh
     volumes:
       - public-keys:${PANTHEON_PUBLIC_KEY_DIRECTORY}
+      - ${PWD}/pantheon/genesis:/etc/pantheon
 
   minernode:
     image: quickstart/pantheon:${PANTHEON_VERSION}-privacy
     environment:
       - PANTHEON_PUBLIC_KEY_DIRECTORY=${PANTHEON_PUBLIC_KEY_DIRECTORY}
-    command: ["--network=dev",
-              "--miner-enabled",
+    command: ["--miner-enabled",
               "--miner-coinbase=${MINER_COINBASE}"]
     volumes:
       - public-keys:${PANTHEON_PUBLIC_KEY_DIRECTORY}
+      - ${PWD}/pantheon/genesis:/etc/pantheon
+
     depends_on:
       - bootnode
 
@@ -40,8 +42,7 @@ services:
     image: quickstart/pantheon:${PANTHEON_VERSION}-privacy
     environment:
       - PANTHEON_PUBLIC_KEY_DIRECTORY=${PANTHEON_PUBLIC_KEY_DIRECTORY}
-    command: ["--network=dev",
-              "--privacy-enabled=true",
+    command: ["--privacy-enabled=true",
               "--privacy-url=${ORION_URL1}",
               "--rpc-http-enabled",
               "--rpc-http-host=0.0.0.0",
@@ -67,8 +68,7 @@ services:
     image: quickstart/pantheon:${PANTHEON_VERSION}-privacy
     environment:
       - PANTHEON_PUBLIC_KEY_DIRECTORY=${PANTHEON_PUBLIC_KEY_DIRECTORY}
-    command: ["--network=dev",
-              "--privacy-enabled=true",
+    command: ["--privacy-enabled=true",
               "--privacy-url=${ORION_URL2}",
               "--rpc-http-enabled",
               "--rpc-http-host=0.0.0.0",
@@ -93,8 +93,7 @@ services:
     image: quickstart/pantheon:${PANTHEON_VERSION}-privacy
     environment:
       - PANTHEON_PUBLIC_KEY_DIRECTORY=${PANTHEON_PUBLIC_KEY_DIRECTORY}
-    command: ["--network=dev",
-              "--privacy-enabled=true",
+    command: ["--privacy-enabled=true",
               "--privacy-url=${ORION_URL3}",
               "--rpc-http-enabled",
               "--rpc-http-host=0.0.0.0",
@@ -118,8 +117,7 @@ services:
 
   rpcnode:
     image: quickstart/pantheon:${PANTHEON_VERSION}-privacy
-    command: ["--network=dev",
-              "--rpc-http-enabled",
+    command: ["--rpc-http-enabled",
               "--rpc-http-host=0.0.0.0",
               "--rpc-http-port=8545",
               "--rpc-http-cors-origins=*",
@@ -129,6 +127,7 @@ services:
               "--host-whitelist=*"]
     volumes:
       - public-keys:${PANTHEON_PUBLIC_KEY_DIRECTORY}
+      - ${PWD}/pantheon/genesis:/etc/pantheon
     depends_on:
       - bootnode
   explorer:
